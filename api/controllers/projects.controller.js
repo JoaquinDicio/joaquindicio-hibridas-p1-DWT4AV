@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import projectsService from "../../services/projects.service.js";
 
 const projectsController = {
@@ -32,10 +33,16 @@ const projectsController = {
   async updateProject(req, res) {
     try {
       const { id } = req.params;
+
+      if (!ObjectId.isValid(id)) {
+        res.status(400).json({ error: "El id proporcionado es invalido" });
+        return;
+      }
+
       const response = await projectsService.udpateProject(id, req.body);
       res.status(200).send(response);
     } catch (e) {
-      res.status(500).send("Internal server error");
+      res.status(500).send(`Internal server error: ${e}`);
     }
   },
 
